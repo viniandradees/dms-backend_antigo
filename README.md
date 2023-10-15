@@ -6,10 +6,15 @@ Welcome to DMS, this is a FullDNA api project.
 
 The DMS is responsible for storing and distributing all static data used into FullDNA systems. Its commitment is to serve as an business library.
 
-## Main admin features
+## Admin user features
 
+- Access for DMS dashboard.
 - Create, update and remove data.
 - Check data integrity.
+
+## Common user features
+
+- Get all library data using http get method.
 
 ## Version
 
