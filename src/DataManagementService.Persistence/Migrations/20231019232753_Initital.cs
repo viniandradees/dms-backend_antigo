@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataManagementService.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initital_1 : Migration
+    public partial class Initital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,6 +85,8 @@ namespace DataManagementService.Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     acronym = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    nationality = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     continent = table.Column<int>(type: "int", nullable: false),
                     description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -92,6 +94,23 @@ namespace DataManagementService.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_country", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "dietary_option",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dietary_option", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -166,8 +185,6 @@ namespace DataManagementService.Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    side_effects = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     interactions = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     precautions = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
@@ -225,8 +242,6 @@ namespace DataManagementService.Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    side_effects = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     interactions = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     precautions = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
@@ -259,23 +274,6 @@ namespace DataManagementService.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "meal_cuisine_description",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_meal_cuisine_description", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "measurement_unit",
                 columns: table => new
                 {
@@ -303,8 +301,6 @@ namespace DataManagementService.Persistence.Migrations
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    side_effects = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     interactions = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -635,26 +631,53 @@ namespace DataManagementService.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "food_attribute_incompatibility",
+                name: "food_disease",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    food_attribute_id = table.Column<int>(type: "int", nullable: false),
-                    incompatible_food_attribute_id = table.Column<int>(type: "int", nullable: false)
+                    food_id = table.Column<int>(type: "int", nullable: false),
+                    disease_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_food_attribute_incompatibility", x => x.id);
+                    table.PrimaryKey("PK_food_disease", x => x.id);
                     table.ForeignKey(
-                        name: "FK_food_attribute_incompatibility_food_attribute_food_attribute~",
-                        column: x => x.food_attribute_id,
-                        principalTable: "food_attribute",
+                        name: "FK_food_disease_disease_disease_id",
+                        column: x => x.disease_id,
+                        principalTable: "disease",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_food_attribute_incompatibility_food_attribute_incompatible_f~",
-                        column: x => x.incompatible_food_attribute_id,
+                        name: "FK_food_disease_food_food_id",
+                        column: x => x.food_id,
+                        principalTable: "food",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "dietary_option_food_attribute",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    dietary_option_id = table.Column<int>(type: "int", nullable: false),
+                    food_attribute_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dietary_option_food_attribute", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_dietary_option_food_attribute_dietary_option_dietary_option_~",
+                        column: x => x.dietary_option_id,
+                        principalTable: "dietary_option",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_dietary_option_food_attribute_food_attribute_food_attribute_~",
+                        column: x => x.food_attribute_id,
                         principalTable: "food_attribute",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -776,6 +799,87 @@ namespace DataManagementService.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "lifestyle_disease",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    lifestyle_id = table.Column<int>(type: "int", nullable: false),
+                    disease_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_lifestyle_disease", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_lifestyle_disease_disease_disease_id",
+                        column: x => x.disease_id,
+                        principalTable: "disease",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_lifestyle_disease_lifestyle_lifestyle_id",
+                        column: x => x.lifestyle_id,
+                        principalTable: "lifestyle",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "meal_country",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    meal_id = table.Column<int>(type: "int", nullable: false),
+                    country_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_meal_country", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_meal_country_country_country_id",
+                        column: x => x.country_id,
+                        principalTable: "country",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_meal_country_meal_meal_id",
+                        column: x => x.meal_id,
+                        principalTable: "meal",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "meal_dietary_option",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    meal_id = table.Column<int>(type: "int", nullable: false),
+                    dietary_option_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_meal_dietary_option", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_meal_dietary_option_dietary_option_dietary_option_id",
+                        column: x => x.dietary_option_id,
+                        principalTable: "dietary_option",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_meal_dietary_option_meal_meal_id",
+                        column: x => x.meal_id,
+                        principalTable: "meal",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "meal_period",
                 columns: table => new
                 {
@@ -789,33 +893,6 @@ namespace DataManagementService.Persistence.Migrations
                     table.PrimaryKey("PK_meal_period", x => x.id);
                     table.ForeignKey(
                         name: "FK_meal_period_meal_meal_id",
-                        column: x => x.meal_id,
-                        principalTable: "meal",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "meal_cuisine_type",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    meal_id = table.Column<int>(type: "int", nullable: false),
-                    meal_cuisine_type_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_meal_cuisine_type", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_meal_cuisine_type_meal_cuisine_description_meal_cuisine_type~",
-                        column: x => x.meal_cuisine_type_id,
-                        principalTable: "meal_cuisine_description",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_meal_cuisine_type_meal_meal_id",
                         column: x => x.meal_id,
                         principalTable: "meal",
                         principalColumn: "id",
@@ -859,12 +936,19 @@ namespace DataManagementService.Persistence.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     meal_id = table.Column<int>(type: "int", nullable: false),
+                    food_id = table.Column<int>(type: "int", nullable: false),
                     food_portion = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     measurement_unit_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_meal_food", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_meal_food_food_food_id",
+                        column: x => x.food_id,
+                        principalTable: "food",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_meal_food_meal_meal_id",
                         column: x => x.meal_id,
@@ -971,31 +1055,25 @@ namespace DataManagementService.Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "supplement_dosage_reference",
+                name: "supplement_disease",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     supplement_id = table.Column<int>(type: "int", nullable: false),
-                    children_dosage_min = table.Column<decimal>(type: "decimal(11,5)", nullable: false),
-                    children_dosage_max = table.Column<decimal>(type: "decimal(11,5)", nullable: false),
-                    children_max_period = table.Column<int>(type: "int", nullable: false),
-                    adult_dosage_min = table.Column<decimal>(type: "decimal(11,5)", nullable: false),
-                    adult_dosage_max = table.Column<decimal>(type: "decimal(11,5)", nullable: false),
-                    adult_max_period = table.Column<int>(type: "int", nullable: false),
-                    measurement_unit_id = table.Column<int>(type: "int", nullable: false)
+                    disease_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_supplement_dosage_reference", x => x.id);
+                    table.PrimaryKey("PK_supplement_disease", x => x.id);
                     table.ForeignKey(
-                        name: "FK_supplement_dosage_reference_measurement_unit_measurement_uni~",
-                        column: x => x.measurement_unit_id,
-                        principalTable: "measurement_unit",
+                        name: "FK_supplement_disease_disease_disease_id",
+                        column: x => x.disease_id,
+                        principalTable: "disease",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_supplement_dosage_reference_supplement_supplement_id",
+                        name: "FK_supplement_disease_supplement_supplement_id",
                         column: x => x.supplement_id,
                         principalTable: "supplement",
                         principalColumn: "id",
@@ -1340,26 +1418,26 @@ namespace DataManagementService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "food",
-                columns: new[] { "id", "best_time_to_take", "description", "interactions", "name", "precautions", "side_effects" },
+                columns: new[] { "id", "best_time_to_take", "description", "interactions", "name", "precautions" },
                 values: new object[,]
                 {
-                    { 1, null, "Salmon is a fatty fish rich in omega-3 fatty acids.", "May interact with blood-thinning medications.", "Salmon", null, "Rarely, some individuals may experience allergic reactions." },
-                    { 2, null, "Broccoli is a cruciferous vegetable known for its health benefits.", "No significant interactions reported.", "Broccoli", null, "May cause gas and bloating in some individuals." },
-                    { 3, null, "Blueberries are packed with antioxidants and nutrients.", "No significant interactions reported.", "Blueberries", null, "Generally well-tolerated, but may cause digestive upset in some people." },
-                    { 4, null, "Almonds are a nutritious and protein-rich nut.", "May interact with medications that lower blood sugar.", "Almonds", null, "Some individuals may have allergies to tree nuts." },
-                    { 5, null, "Spinach is a leafy green vegetable packed with vitamins and minerals.", "May interact with blood-thinning medications.", "Spinach", null, "High oxalate content may contribute to kidney stone formation." }
+                    { 1, null, "Salmon is a fatty fish rich in omega-3 fatty acids.", "May interact with blood-thinning medications.", "Salmon", null },
+                    { 2, null, "Broccoli is a cruciferous vegetable known for its health benefits.", "No significant interactions reported.", "Broccoli", null },
+                    { 3, null, "Blueberries are packed with antioxidants and nutrients.", "No significant interactions reported.", "Blueberries", null },
+                    { 4, null, "Almonds are a nutritious and protein-rich nut.", "May interact with medications that lower blood sugar.", "Almonds", null },
+                    { 5, null, "Spinach is a leafy green vegetable packed with vitamins and minerals.", "May interact with blood-thinning medications.", "Spinach", null }
                 });
 
             migrationBuilder.InsertData(
                 table: "lifestyle",
-                columns: new[] { "id", "description", "interactions", "name", "precautions", "side_effects" },
+                columns: new[] { "id", "description", "interactions", "name", "precautions" },
                 values: new object[,]
                 {
-                    { 1, "Engaging in regular physical activity has numerous health benefits.", "May interact with certain medical conditions and medications.", "Regular Exercise", "Consult a healthcare professional before starting a new exercise program.", "Overtraining may lead to injuries and burnout." },
-                    { 2, "Eating a balanced and nutritious diet supports overall well-being.", "May interact with certain medical conditions and medications.", "Healthy Diet", "Consult a registered dietitian for personalized dietary guidance.", "Improper diet may lead to nutrient deficiencies and health issues." },
-                    { 3, "Effective stress management techniques promote mental and emotional health.", "May interact with mental health conditions and medications.", "Stress Management", "Explore relaxation techniques like meditation and deep breathing.", "Chronic stress can contribute to various health problems." },
-                    { 4, "Getting enough quality sleep is essential for physical and mental recovery.", "May interact with sleep disorders and certain medications.", "Adequate Sleep", "Prioritize a consistent sleep schedule and create a sleep-conducive environment.", "Sleep deprivation may lead to fatigue, mood changes, and impaired cognition." },
-                    { 5, "Avoiding tobacco products reduces the risk of various health issues.", "Tobacco interacts negatively with almost all bodily systems.", "Tobacco-Free", "Seek professional help if you want to quit smoking or using tobacco.", "Tobacco use is a major cause of lung disease, cancer, and heart disease." }
+                    { 1, "Engaging in regular physical activity has numerous health benefits.", "May interact with certain medical conditions and medications.", "Regular Exercise", "Consult a healthcare professional before starting a new exercise program." },
+                    { 2, "Eating a balanced and nutritious diet supports overall well-being.", "May interact with certain medical conditions and medications.", "Healthy Diet", "Consult a registered dietitian for personalized dietary guidance." },
+                    { 3, "Effective stress management techniques promote mental and emotional health.", "May interact with mental health conditions and medications.", "Stress Management", "Explore relaxation techniques like meditation and deep breathing." },
+                    { 4, "Getting enough quality sleep is essential for physical and mental recovery.", "May interact with sleep disorders and certain medications.", "Adequate Sleep", "Prioritize a consistent sleep schedule and create a sleep-conducive environment." },
+                    { 5, "Avoiding tobacco products reduces the risk of various health issues.", "Tobacco interacts negatively with almost all bodily systems.", "Tobacco-Free", "Seek professional help if you want to quit smoking or using tobacco." }
                 });
 
             migrationBuilder.InsertData(
@@ -1391,14 +1469,14 @@ namespace DataManagementService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "supplement",
-                columns: new[] { "id", "best_time_to_take", "description", "interactions", "name", "precautions", "side_effects" },
+                columns: new[] { "id", "best_time_to_take", "description", "interactions", "name", "precautions" },
                 values: new object[,]
                 {
-                    { 1, "Can be taken with food to enhance absorption.", "Vitamin D is essential for strong bones and immune function.", "May interact with certain heart and kidney medications.", "Vitamin D", "Monitor vitamin D levels if taking high doses.", "May cause nausea and headache at high doses." },
-                    { 2, "Can be taken with meals to reduce gastrointestinal symptoms.", "Omega-3 fatty acids are beneficial for heart and brain health.", "May interact with blood-thinning medications.", "Omega-3 Fatty Acids", "Choose high-quality supplements to avoid contaminants.", "May cause fishy aftertaste and gastrointestinal discomfort." },
-                    { 3, "Best taken on an empty stomach.", "Probiotics promote a healthy balance of gut bacteria.", "May interact with immunosuppressive medications.", "Probiotics", "Choose strains with scientific support for desired effects.", "May cause bloating and gas initially." },
-                    { 4, "Take on an empty stomach with vitamin C for better absorption.", "Iron is important for the production of red blood cells.", "May interact with certain antibiotics and antacids.", "Iron", "Should not be taken with calcium-rich foods or supplements.", "May cause constipation and stomach upset." },
-                    { 5, "Can be taken with meals to reduce gastrointestinal symptoms.", "Magnesium is essential for nerve and muscle function.", "May interact with certain medications for heart and bones.", "Magnesium", "Avoid excessive magnesium intake, as it can be toxic.", "May cause diarrhea and gastrointestinal upset at high doses." }
+                    { 1, "Can be taken with food to enhance absorption.", "Vitamin D is essential for strong bones and immune function.", "May interact with certain heart and kidney medications.", "Vitamin D", "Monitor vitamin D levels if taking high doses." },
+                    { 2, "Can be taken with meals to reduce gastrointestinal symptoms.", "Omega-3 fatty acids are beneficial for heart and brain health.", "May interact with blood-thinning medications.", "Omega-3 Fatty Acids", "Choose high-quality supplements to avoid contaminants." },
+                    { 3, "Best taken on an empty stomach.", "Probiotics promote a healthy balance of gut bacteria.", "May interact with immunosuppressive medications.", "Probiotics", "Choose strains with scientific support for desired effects." },
+                    { 4, "Take on an empty stomach with vitamin C for better absorption.", "Iron is important for the production of red blood cells.", "May interact with certain antibiotics and antacids.", "Iron", "Should not be taken with calcium-rich foods or supplements." },
+                    { 5, "Can be taken with meals to reduce gastrointestinal symptoms.", "Magnesium is essential for nerve and muscle function.", "May interact with certain medications for heart and bones.", "Magnesium", "Avoid excessive magnesium intake, as it can be toxic." }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1443,6 +1521,22 @@ namespace DataManagementService.Persistence.Migrations
                 table: "country",
                 column: "name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dietary_option_name",
+                table: "dietary_option",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dietary_option_food_attribute_dietary_option_id",
+                table: "dietary_option_food_attribute",
+                column: "dietary_option_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dietary_option_food_attribute_food_attribute_id",
+                table: "dietary_option_food_attribute",
+                column: "food_attribute_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_disease_name",
@@ -1648,14 +1742,14 @@ namespace DataManagementService.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_food_attribute_incompatibility_food_attribute_id",
-                table: "food_attribute_incompatibility",
-                column: "food_attribute_id");
+                name: "IX_food_disease_disease_id",
+                table: "food_disease",
+                column: "disease_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_food_attribute_incompatibility_incompatible_food_attribute_id",
-                table: "food_attribute_incompatibility",
-                column: "incompatible_food_attribute_id");
+                name: "IX_food_disease_food_id",
+                table: "food_disease",
+                column: "food_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_food_healty_objective_food_id",
@@ -1699,14 +1793,39 @@ namespace DataManagementService.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_meal_cuisine_type_meal_cuisine_type_id",
-                table: "meal_cuisine_type",
-                column: "meal_cuisine_type_id");
+                name: "IX_lifestyle_disease_disease_id",
+                table: "lifestyle_disease",
+                column: "disease_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_meal_cuisine_type_meal_id",
-                table: "meal_cuisine_type",
+                name: "IX_lifestyle_disease_lifestyle_id",
+                table: "lifestyle_disease",
+                column: "lifestyle_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meal_country_country_id",
+                table: "meal_country",
+                column: "country_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meal_country_meal_id",
+                table: "meal_country",
                 column: "meal_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meal_dietary_option_dietary_option_id",
+                table: "meal_dietary_option",
+                column: "dietary_option_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meal_dietary_option_meal_id",
+                table: "meal_dietary_option",
+                column: "meal_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_meal_food_food_id",
+                table: "meal_food",
+                column: "food_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_meal_food_meal_id",
@@ -1724,13 +1843,13 @@ namespace DataManagementService.Persistence.Migrations
                 column: "meal_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_supplement_dosage_reference_measurement_unit_id",
-                table: "supplement_dosage_reference",
-                column: "measurement_unit_id");
+                name: "IX_supplement_disease_disease_id",
+                table: "supplement_disease",
+                column: "disease_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_supplement_dosage_reference_supplement_id",
-                table: "supplement_dosage_reference",
+                name: "IX_supplement_disease_supplement_id",
+                table: "supplement_disease",
                 column: "supplement_id");
 
             migrationBuilder.CreateIndex(
@@ -1757,6 +1876,9 @@ namespace DataManagementService.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "dietary_option_food_attribute");
 
             migrationBuilder.DropTable(
                 name: "disease_disease");
@@ -1795,7 +1917,7 @@ namespace DataManagementService.Persistence.Migrations
                 name: "exam_supplement_dosage_age_range");
 
             migrationBuilder.DropTable(
-                name: "food_attribute_incompatibility");
+                name: "food_disease");
 
             migrationBuilder.DropTable(
                 name: "food_healty_objective");
@@ -1807,7 +1929,13 @@ namespace DataManagementService.Persistence.Migrations
                 name: "food_supplement");
 
             migrationBuilder.DropTable(
-                name: "meal_cuisine_type");
+                name: "lifestyle_disease");
+
+            migrationBuilder.DropTable(
+                name: "meal_country");
+
+            migrationBuilder.DropTable(
+                name: "meal_dietary_option");
 
             migrationBuilder.DropTable(
                 name: "meal_food");
@@ -1816,7 +1944,7 @@ namespace DataManagementService.Persistence.Migrations
                 name: "meal_period");
 
             migrationBuilder.DropTable(
-                name: "supplement_dosage_reference");
+                name: "supplement_disease");
 
             migrationBuilder.DropTable(
                 name: "user_details");
@@ -1834,12 +1962,6 @@ namespace DataManagementService.Persistence.Migrations
                 name: "disease_supplement_dosage");
 
             migrationBuilder.DropTable(
-                name: "lifestyle");
-
-            migrationBuilder.DropTable(
-                name: "country");
-
-            migrationBuilder.DropTable(
                 name: "exam_result_reference");
 
             migrationBuilder.DropTable(
@@ -1852,7 +1974,13 @@ namespace DataManagementService.Persistence.Migrations
                 name: "food_attribute");
 
             migrationBuilder.DropTable(
-                name: "meal_cuisine_description");
+                name: "lifestyle");
+
+            migrationBuilder.DropTable(
+                name: "country");
+
+            migrationBuilder.DropTable(
+                name: "dietary_option");
 
             migrationBuilder.DropTable(
                 name: "meal");

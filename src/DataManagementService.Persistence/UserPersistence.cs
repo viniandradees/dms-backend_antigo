@@ -26,7 +26,7 @@ namespace DataManagementService.Persistence
 
         public async Task<User> GetByUserNameAsync(string name)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.UserName.ToLower() == "admin");
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserName.ToLower() == name);
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataManagementService.Persistence.Migrations
 {
     [DbContext(typeof(DataManagementServiceContext))]
-    [Migration("20231002212157_Initital_1")]
-    partial class Initital_1
+    [Migration("20231019232753_Initital")]
+    partial class Initital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,13 +42,50 @@ namespace DataManagementService.Persistence.Migrations
                     b.Property<int>("Continent")
                         .HasColumnType("int")
                         .HasColumnName("continent")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(5);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("description")
-                        .HasColumnOrder(5);
+                        .HasColumnOrder(6);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("name")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("nationality")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("country");
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.DietaryOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("description")
+                        .HasColumnOrder(3);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -62,7 +99,35 @@ namespace DataManagementService.Persistence.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("country");
+                    b.ToTable("dietary_option");
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.DietaryOptionFoodAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DietaryOptionId")
+                        .HasColumnType("int")
+                        .HasColumnName("dietary_option_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("FoodAttributeId")
+                        .HasColumnType("int")
+                        .HasColumnName("food_attribute_id")
+                        .HasColumnOrder(3);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DietaryOptionId");
+
+                    b.HasIndex("FoodAttributeId");
+
+                    b.ToTable("dietary_option_food_attribute");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.Disease", b =>
@@ -1215,7 +1280,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)")
                         .HasColumnName("best_time_to_take")
-                        .HasColumnOrder(7);
+                        .HasColumnOrder(6);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -1227,7 +1292,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("interactions")
-                        .HasColumnOrder(5);
+                        .HasColumnOrder(4);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1240,13 +1305,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("precautions")
-                        .HasColumnOrder(6);
-
-                    b.Property<string>("SideEffects")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("side_effects")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(5);
 
                     b.HasKey("Id");
 
@@ -1261,40 +1320,35 @@ namespace DataManagementService.Persistence.Migrations
                             Id = 1,
                             Description = "Salmon is a fatty fish rich in omega-3 fatty acids.",
                             Interactions = "May interact with blood-thinning medications.",
-                            Name = "Salmon",
-                            SideEffects = "Rarely, some individuals may experience allergic reactions."
+                            Name = "Salmon"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Broccoli is a cruciferous vegetable known for its health benefits.",
                             Interactions = "No significant interactions reported.",
-                            Name = "Broccoli",
-                            SideEffects = "May cause gas and bloating in some individuals."
+                            Name = "Broccoli"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Blueberries are packed with antioxidants and nutrients.",
                             Interactions = "No significant interactions reported.",
-                            Name = "Blueberries",
-                            SideEffects = "Generally well-tolerated, but may cause digestive upset in some people."
+                            Name = "Blueberries"
                         },
                         new
                         {
                             Id = 4,
                             Description = "Almonds are a nutritious and protein-rich nut.",
                             Interactions = "May interact with medications that lower blood sugar.",
-                            Name = "Almonds",
-                            SideEffects = "Some individuals may have allergies to tree nuts."
+                            Name = "Almonds"
                         },
                         new
                         {
                             Id = 5,
                             Description = "Spinach is a leafy green vegetable packed with vitamins and minerals.",
                             Interactions = "May interact with blood-thinning medications.",
-                            Name = "Spinach",
-                            SideEffects = "High oxalate content may contribute to kidney stone formation."
+                            Name = "Spinach"
                         });
                 });
 
@@ -1328,7 +1382,7 @@ namespace DataManagementService.Persistence.Migrations
                     b.ToTable("food_attribute");
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.FoodAttributeIncompatibility", b =>
+            modelBuilder.Entity("DataManagementService.Domain.FoodDisease", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1337,23 +1391,23 @@ namespace DataManagementService.Persistence.Migrations
                         .HasColumnOrder(1)
                         .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("FoodAttributeId")
+                    b.Property<int>("DiseaseId")
                         .HasColumnType("int")
-                        .HasColumnName("food_attribute_id")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("IncompatibleFoodAttributeId")
-                        .HasColumnType("int")
-                        .HasColumnName("incompatible_food_attribute_id")
+                        .HasColumnName("disease_id")
                         .HasColumnOrder(3);
+
+                    b.Property<int>("FoodId")
+                        .HasColumnType("int")
+                        .HasColumnName("food_id")
+                        .HasColumnOrder(2);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FoodAttributeId");
+                    b.HasIndex("DiseaseId");
 
-                    b.HasIndex("IncompatibleFoodAttributeId");
+                    b.HasIndex("FoodId");
 
-                    b.ToTable("food_attribute_incompatibility");
+                    b.ToTable("food_disease");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.FoodHealtyObjective", b =>
@@ -1593,7 +1647,8 @@ namespace DataManagementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -1605,7 +1660,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("interactions")
-                        .HasColumnOrder(5);
+                        .HasColumnOrder(4);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1618,13 +1673,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("precautions")
-                        .HasColumnOrder(6);
-
-                    b.Property<string>("SideEffects")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("side_effects")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(5);
 
                     b.HasKey("Id");
 
@@ -1637,8 +1686,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Engaging in regular physical activity has numerous health benefits.",
                             Interactions = "May interact with certain medical conditions and medications.",
                             Name = "Regular Exercise",
-                            Precautions = "Consult a healthcare professional before starting a new exercise program.",
-                            SideEffects = "Overtraining may lead to injuries and burnout."
+                            Precautions = "Consult a healthcare professional before starting a new exercise program."
                         },
                         new
                         {
@@ -1646,8 +1694,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Eating a balanced and nutritious diet supports overall well-being.",
                             Interactions = "May interact with certain medical conditions and medications.",
                             Name = "Healthy Diet",
-                            Precautions = "Consult a registered dietitian for personalized dietary guidance.",
-                            SideEffects = "Improper diet may lead to nutrient deficiencies and health issues."
+                            Precautions = "Consult a registered dietitian for personalized dietary guidance."
                         },
                         new
                         {
@@ -1655,8 +1702,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Effective stress management techniques promote mental and emotional health.",
                             Interactions = "May interact with mental health conditions and medications.",
                             Name = "Stress Management",
-                            Precautions = "Explore relaxation techniques like meditation and deep breathing.",
-                            SideEffects = "Chronic stress can contribute to various health problems."
+                            Precautions = "Explore relaxation techniques like meditation and deep breathing."
                         },
                         new
                         {
@@ -1664,8 +1710,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Getting enough quality sleep is essential for physical and mental recovery.",
                             Interactions = "May interact with sleep disorders and certain medications.",
                             Name = "Adequate Sleep",
-                            Precautions = "Prioritize a consistent sleep schedule and create a sleep-conducive environment.",
-                            SideEffects = "Sleep deprivation may lead to fatigue, mood changes, and impaired cognition."
+                            Precautions = "Prioritize a consistent sleep schedule and create a sleep-conducive environment."
                         },
                         new
                         {
@@ -1673,9 +1718,36 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Avoiding tobacco products reduces the risk of various health issues.",
                             Interactions = "Tobacco interacts negatively with almost all bodily systems.",
                             Name = "Tobacco-Free",
-                            Precautions = "Seek professional help if you want to quit smoking or using tobacco.",
-                            SideEffects = "Tobacco use is a major cause of lung disease, cancer, and heart disease."
+                            Precautions = "Seek professional help if you want to quit smoking or using tobacco."
                         });
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.LifestyleDisease", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DiseaseId")
+                        .HasColumnType("int")
+                        .HasColumnName("disease_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<int>("LifestyleId")
+                        .HasColumnType("int")
+                        .HasColumnName("lifestyle_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiseaseId");
+
+                    b.HasIndex("LifestyleId");
+
+                    b.ToTable("lifestyle_disease");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.Meal", b =>
@@ -1684,7 +1756,8 @@ namespace DataManagementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -1757,17 +1830,18 @@ namespace DataManagementService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.MealCuisineType", b =>
+            modelBuilder.Entity("DataManagementService.Domain.MealCountry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("MealCuisineTypeDescriptionId")
+                    b.Property<int>("CountryId")
                         .HasColumnType("int")
-                        .HasColumnName("meal_cuisine_type_id")
+                        .HasColumnName("country_id")
                         .HasColumnOrder(3);
 
                     b.Property<int>("MealId")
@@ -1777,37 +1851,39 @@ namespace DataManagementService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MealCuisineTypeDescriptionId");
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("MealId");
 
-                    b.ToTable("meal_cuisine_type");
+                    b.ToTable("meal_country");
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.MealCuisineTypeDescription", b =>
+            modelBuilder.Entity("DataManagementService.Domain.MealDietaryOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("description")
+                    b.Property<int>("DietaryOptionId")
+                        .HasColumnType("int")
+                        .HasColumnName("dietary_option_id")
                         .HasColumnOrder(3);
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("name")
+                    b.Property<int>("MealId")
+                        .HasColumnType("int")
+                        .HasColumnName("meal_id")
                         .HasColumnOrder(2);
 
                     b.HasKey("Id");
 
-                    b.ToTable("meal_cuisine_description");
+                    b.HasIndex("DietaryOptionId");
+
+                    b.HasIndex("MealId");
+
+                    b.ToTable("meal_dietary_option");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.MealFood", b =>
@@ -1816,12 +1892,18 @@ namespace DataManagementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FoodId")
+                        .HasColumnType("int")
+                        .HasColumnName("food_id")
+                        .HasColumnOrder(3);
 
                     b.Property<decimal>("FoodPortion")
                         .HasColumnType("decimal(65,30)")
                         .HasColumnName("food_portion")
-                        .HasColumnOrder(3);
+                        .HasColumnOrder(4);
 
                     b.Property<int>("MealId")
                         .HasColumnType("int")
@@ -1831,9 +1913,11 @@ namespace DataManagementService.Persistence.Migrations
                     b.Property<int>("MeasurementUnitId")
                         .HasColumnType("int")
                         .HasColumnName("measurement_unit_id")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(5);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FoodId");
 
                     b.HasIndex("MealId");
 
@@ -1848,7 +1932,8 @@ namespace DataManagementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("MealId")
                         .HasColumnType("int")
@@ -1964,13 +2049,14 @@ namespace DataManagementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BestTimeToTake")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)")
                         .HasColumnName("best_time_to_take")
-                        .HasColumnOrder(7);
+                        .HasColumnOrder(6);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -1982,7 +2068,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("interactions")
-                        .HasColumnOrder(5);
+                        .HasColumnOrder(4);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1995,13 +2081,7 @@ namespace DataManagementService.Persistence.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("precautions")
-                        .HasColumnOrder(6);
-
-                    b.Property<string>("SideEffects")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)")
-                        .HasColumnName("side_effects")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(5);
 
                     b.HasKey("Id");
 
@@ -2015,8 +2095,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Vitamin D is essential for strong bones and immune function.",
                             Interactions = "May interact with certain heart and kidney medications.",
                             Name = "Vitamin D",
-                            Precautions = "Monitor vitamin D levels if taking high doses.",
-                            SideEffects = "May cause nausea and headache at high doses."
+                            Precautions = "Monitor vitamin D levels if taking high doses."
                         },
                         new
                         {
@@ -2025,8 +2104,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Omega-3 fatty acids are beneficial for heart and brain health.",
                             Interactions = "May interact with blood-thinning medications.",
                             Name = "Omega-3 Fatty Acids",
-                            Precautions = "Choose high-quality supplements to avoid contaminants.",
-                            SideEffects = "May cause fishy aftertaste and gastrointestinal discomfort."
+                            Precautions = "Choose high-quality supplements to avoid contaminants."
                         },
                         new
                         {
@@ -2035,8 +2113,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Probiotics promote a healthy balance of gut bacteria.",
                             Interactions = "May interact with immunosuppressive medications.",
                             Name = "Probiotics",
-                            Precautions = "Choose strains with scientific support for desired effects.",
-                            SideEffects = "May cause bloating and gas initially."
+                            Precautions = "Choose strains with scientific support for desired effects."
                         },
                         new
                         {
@@ -2045,8 +2122,7 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Iron is important for the production of red blood cells.",
                             Interactions = "May interact with certain antibiotics and antacids.",
                             Name = "Iron",
-                            Precautions = "Should not be taken with calcium-rich foods or supplements.",
-                            SideEffects = "May cause constipation and stomach upset."
+                            Precautions = "Should not be taken with calcium-rich foods or supplements."
                         },
                         new
                         {
@@ -2055,53 +2131,23 @@ namespace DataManagementService.Persistence.Migrations
                             Description = "Magnesium is essential for nerve and muscle function.",
                             Interactions = "May interact with certain medications for heart and bones.",
                             Name = "Magnesium",
-                            Precautions = "Avoid excessive magnesium intake, as it can be toxic.",
-                            SideEffects = "May cause diarrhea and gastrointestinal upset at high doses."
+                            Precautions = "Avoid excessive magnesium intake, as it can be toxic."
                         });
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.SupplementDosageReference", b =>
+            modelBuilder.Entity("DataManagementService.Domain.SupplementDisease", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id")
-                        .HasColumnOrder(1);
+                        .HasColumnOrder(1)
+                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AdultDosageMax")
-                        .HasColumnType("decimal(11,5)")
-                        .HasColumnName("adult_dosage_max")
-                        .HasColumnOrder(7);
-
-                    b.Property<decimal>("AdultDosageMin")
-                        .HasColumnType("decimal(11,5)")
-                        .HasColumnName("adult_dosage_min")
-                        .HasColumnOrder(6);
-
-                    b.Property<int>("AdultMaxPeriod")
+                    b.Property<int>("DiseaseId")
                         .HasColumnType("int")
-                        .HasColumnName("adult_max_period")
-                        .HasColumnOrder(8);
-
-                    b.Property<decimal>("ChildrenDosageMax")
-                        .HasColumnType("decimal(11,5)")
-                        .HasColumnName("children_dosage_max")
-                        .HasColumnOrder(4);
-
-                    b.Property<decimal>("ChildrenDosageMin")
-                        .HasColumnType("decimal(11,5)")
-                        .HasColumnName("children_dosage_min")
+                        .HasColumnName("disease_id")
                         .HasColumnOrder(3);
-
-                    b.Property<int>("ChildrenMaxPeriod")
-                        .HasColumnType("int")
-                        .HasColumnName("children_max_period")
-                        .HasColumnOrder(5);
-
-                    b.Property<int>("MeasurementUnitId")
-                        .HasColumnType("int")
-                        .HasColumnName("measurement_unit_id")
-                        .HasColumnOrder(9);
 
                     b.Property<int>("SupplementId")
                         .HasColumnType("int")
@@ -2110,11 +2156,11 @@ namespace DataManagementService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MeasurementUnitId");
+                    b.HasIndex("DiseaseId");
 
                     b.HasIndex("SupplementId");
 
-                    b.ToTable("supplement_dosage_reference");
+                    b.ToTable("supplement_disease");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -2243,6 +2289,25 @@ namespace DataManagementService.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.DietaryOptionFoodAttribute", b =>
+                {
+                    b.HasOne("DataManagementService.Domain.DietaryOption", "DietaryOption")
+                        .WithMany("Incompatibilities")
+                        .HasForeignKey("DietaryOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataManagementService.Domain.FoodAttribute", "FoodAttribute")
+                        .WithMany("Incompatibilities")
+                        .HasForeignKey("FoodAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DietaryOption");
+
+                    b.Navigation("FoodAttribute");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.DiseaseDisease", b =>
@@ -2604,23 +2669,23 @@ namespace DataManagementService.Persistence.Migrations
                     b.Navigation("ExamSupplementDosage");
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.FoodAttributeIncompatibility", b =>
+            modelBuilder.Entity("DataManagementService.Domain.FoodDisease", b =>
                 {
-                    b.HasOne("DataManagementService.Domain.FoodAttribute", "FoodAttribute")
-                        .WithMany("Incompatibilities")
-                        .HasForeignKey("FoodAttributeId")
+                    b.HasOne("DataManagementService.Domain.Disease", "Disease")
+                        .WithMany("SideEffectOfFoods")
+                        .HasForeignKey("DiseaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataManagementService.Domain.FoodAttribute", "IncompatibleFoodAttribute")
-                        .WithMany()
-                        .HasForeignKey("IncompatibleFoodAttributeId")
+                    b.HasOne("DataManagementService.Domain.Food", "Food")
+                        .WithMany("SideEffects")
+                        .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FoodAttribute");
+                    b.Navigation("Disease");
 
-                    b.Navigation("IncompatibleFoodAttribute");
+                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.FoodHealtyObjective", b =>
@@ -2697,29 +2762,73 @@ namespace DataManagementService.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.MealCuisineType", b =>
+            modelBuilder.Entity("DataManagementService.Domain.LifestyleDisease", b =>
                 {
-                    b.HasOne("DataManagementService.Domain.MealCuisineTypeDescription", "MealCuisineTypeDescription")
-                        .WithMany()
-                        .HasForeignKey("MealCuisineTypeDescriptionId")
+                    b.HasOne("DataManagementService.Domain.Disease", "Disease")
+                        .WithMany("SideEffectOfLifestyles")
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataManagementService.Domain.Lifestyle", "Lifestyle")
+                        .WithMany("SideEffects")
+                        .HasForeignKey("LifestyleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Lifestyle");
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.MealCountry", b =>
+                {
+                    b.HasOne("DataManagementService.Domain.Country", "Country")
+                        .WithMany("MealCountries")
+                        .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataManagementService.Domain.Meal", "Meal")
-                        .WithMany("MealCuisineTypes")
+                        .WithMany("InternationalCuisines")
                         .HasForeignKey("MealId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Meal");
+                    b.Navigation("Country");
 
-                    b.Navigation("MealCuisineTypeDescription");
+                    b.Navigation("Meal");
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.MealDietaryOption", b =>
+                {
+                    b.HasOne("DataManagementService.Domain.DietaryOption", "DietaryOption")
+                        .WithMany("MealDietaryOptions")
+                        .HasForeignKey("DietaryOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataManagementService.Domain.Meal", "Meal")
+                        .WithMany("MealDietaryOptions")
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DietaryOption");
+
+                    b.Navigation("Meal");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.MealFood", b =>
                 {
+                    b.HasOne("DataManagementService.Domain.Food", "Food")
+                        .WithMany("FoundIn")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataManagementService.Domain.Meal", "Meal")
-                        .WithMany()
+                        .WithMany("Ingredients")
                         .HasForeignKey("MealId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2729,6 +2838,8 @@ namespace DataManagementService.Persistence.Migrations
                         .HasForeignKey("MeasurementUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Food");
 
                     b.Navigation("Meal");
 
@@ -2746,21 +2857,21 @@ namespace DataManagementService.Persistence.Migrations
                     b.Navigation("Meal");
                 });
 
-            modelBuilder.Entity("DataManagementService.Domain.SupplementDosageReference", b =>
+            modelBuilder.Entity("DataManagementService.Domain.SupplementDisease", b =>
                 {
-                    b.HasOne("DataManagementService.Domain.MeasurementUnit", "MeasurementUnit")
-                        .WithMany()
-                        .HasForeignKey("MeasurementUnitId")
+                    b.HasOne("DataManagementService.Domain.Disease", "Disease")
+                        .WithMany("SideEffectOfSupplements")
+                        .HasForeignKey("DiseaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataManagementService.Domain.Supplement", "Supplement")
-                        .WithMany("DosageReferences")
+                        .WithMany("SideEffects")
                         .HasForeignKey("SupplementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MeasurementUnit");
+                    b.Navigation("Disease");
 
                     b.Navigation("Supplement");
                 });
@@ -2816,6 +2927,18 @@ namespace DataManagementService.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DataManagementService.Domain.Country", b =>
+                {
+                    b.Navigation("MealCountries");
+                });
+
+            modelBuilder.Entity("DataManagementService.Domain.DietaryOption", b =>
+                {
+                    b.Navigation("Incompatibilities");
+
+                    b.Navigation("MealDietaryOptions");
+                });
+
             modelBuilder.Entity("DataManagementService.Domain.Disease", b =>
                 {
                     b.Navigation("DiagnoseExams");
@@ -2823,6 +2946,12 @@ namespace DataManagementService.Persistence.Migrations
                     b.Navigation("DiagnoseSymptoms");
 
                     b.Navigation("SideEffectOfDrugs");
+
+                    b.Navigation("SideEffectOfFoods");
+
+                    b.Navigation("SideEffectOfLifestyles");
+
+                    b.Navigation("SideEffectOfSupplements");
 
                     b.Navigation("SymptomOfDiseases");
 
@@ -2906,11 +3035,15 @@ namespace DataManagementService.Persistence.Migrations
                 {
                     b.Navigation("Attributes");
 
+                    b.Navigation("FoundIn");
+
                     b.Navigation("Nutrients");
 
                     b.Navigation("RelatedExams");
 
                     b.Navigation("RelatedHealtyObjectives");
+
+                    b.Navigation("SideEffects");
 
                     b.Navigation("TreatableDiseases");
                 });
@@ -2937,22 +3070,28 @@ namespace DataManagementService.Persistence.Migrations
                     b.Navigation("RelatedDiseases");
 
                     b.Navigation("RelatedExams");
+
+                    b.Navigation("SideEffects");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.Meal", b =>
                 {
-                    b.Navigation("MealCuisineTypes");
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("InternationalCuisines");
+
+                    b.Navigation("MealDietaryOptions");
 
                     b.Navigation("MealPeriods");
                 });
 
             modelBuilder.Entity("DataManagementService.Domain.Supplement", b =>
                 {
-                    b.Navigation("DosageReferences");
-
                     b.Navigation("FoundIn");
 
                     b.Navigation("RelatedExams");
+
+                    b.Navigation("SideEffects");
 
                     b.Navigation("TreatableDiseases");
                 });
